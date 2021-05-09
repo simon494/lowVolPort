@@ -49,22 +49,41 @@ def dbConnect(string):
                             echo=True,
                             pool_size=8,
                             pool_recycle=60*30)
-    conn=engine.connect()
     print('Database connected!')
-    return conn
+    return engine
 
-def get_data(conn,sql):
+def get_data(engine,sql):
     data_list=[]
     try:
-        with conn:
-            print('Executing SQL!')
-            cur=conn.execute(sql)
+        with engine.connect() as conn:
+            print('Executing SQL! '+sql)
+            cur = conn.execute(sql)
+            for row in cur:
+                # print(row)
+                data_list.append(row)
     except:
         print('Exception raised')
-        cur=None
-    for row in cur:
-        #print(row)
-        data_list.append(row)
+
+
     df=pandas.DataFrame(data_list)
     return df
 
+def insert_data(engine,date,code,vol=None,pe=None,momentum=None):
+    print('Insert data')
+    try:
+        with engine.connect() as conn:
+            cur=conn.execute(
+                'select * from processData where date = \''+ date +'\' and code = \''+ code + '\''
+            )
+            res=cur.fetchone()
+
+            if res!=None:
+                print('data exist!')
+            else:
+                print('inserting new data!')
+                insert_sql = 'insert into processData (date,code,vol,pe,momentum) values (\'' + date + '\',\'' + code + '\',\'' + str(vol) + '\',\'' + str(pe) +'\',\''+str(momentum)+'\')'
+                print(insert_sql)
+                with engine.connect() as conn:
+                    conn.execute(insert_sql)
+    except:
+        print('Insert exception occured!')
