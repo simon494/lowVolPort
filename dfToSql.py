@@ -1,6 +1,5 @@
 import baostock as bs
 import pandas as pd
-import sqlalchemy as al
 import dbMan as man
 
 lg=bs.login()

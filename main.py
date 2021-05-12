@@ -36,15 +36,25 @@ result=pd.DataFrame(hs_stocks_list,columns=rs.fields)
 # perMove=tk.calPercentage(df)
 # std=tk.stdDev(perMove)
 # print(type(std))
+stocks_list=[]
+for i in range(100):
+    stocks_list.append(hs_stocks_list[i])
 
-stocks_list=[['2021-04-26', 'sh.600000', '浦发银行'],['2021-04-26', 'sh.600004', '白云机场'],['2021-04-26', 'sh.600009', '上海机场'],
-             ['2021-04-26', 'sh.600010', '包钢股份'],['2021-04-26', 'sh.600011', '华能国际'], ['2021-04-26', 'sh.600015', '华夏银行'],
-             ['2021-04-26', 'sh.600016', '民生银行'], ['2021-04-26', 'sh.600018', '上港集团'], ['2021-04-26', 'sh.600019', '宝钢股份'], ['2021-04-26', 'sh.600025', '华能水电']
-]
+print(len(stocks_list))
+
+
+# stocks_list=[['2021-04-26', 'sh.600000', '浦发银行'],['2021-04-26', 'sh.600004', '白云机场'],['2021-04-26', 'sh.600009', '上海机场'],
+#              ['2021-04-26', 'sh.600010', '包钢股份'],['2021-04-26', 'sh.600011', '华能国际'], ['2021-04-26', 'sh.600015', '华夏银行'],
+#              ['2021-04-26', 'sh.600016', '民生银行'],['2021-04-26', 'sh.600018', '上港集团'], ['2021-04-26', 'sh.600019', '宝钢股份'],
+#              ['2021-04-26', 'sh.600025', '华能水电'],['2021-04-26', 'sh.600027', '华电国际'], ['2021-04-26', 'sh.600028', '中国石化'],
+#              ['2021-04-26', 'sh.600029', '南方航空'], ['2021-04-26', 'sh.600030', '中信证券'], ['2021-04-26', 'sh.600031', '三一重工'],
+#              ['2021-04-26', 'sh.600036', '招商银行'], ['2021-04-26', 'sh.600048', '保利地产'], ['2021-04-26', 'sh.600050', '中国联通'],
+#              ['2021-04-26', 'sh.600061', '国投资本'], ['2021-04-26', 'sh.600066', '宇通客车'], ['2021-04-26', 'sh.600068', '葛洲坝']
+# ]
 
 vol_list=[]
 for date in date_list:
-    for code in stocks_list:
+    for code in hs_stocks_list:
         # print(date,code[1])
         sql='select * from dataSheet where date <= \''+ date +'\' and code = \''+code[1] +'\' order by date desc limit 750'
         df=dbm.get_data(engine,sql)
@@ -54,7 +64,9 @@ for date in date_list:
         pe = tk.peTTM(df)
         mom = tk.getMomentum(df)
         vol_list.append([date,code[1],std,pe])
-        dbm.insert_data(engine,date,code[1],std,pe,mom)
+        insert_sql = 'insert into processData (date,code,vol,pe,momentum) values (\'' + date + '\',\'' + code[1] + '\',\'' + str(
+            std) + '\',\'' + str(pe) + '\',\'' + str(mom) + '\')'
+        dbm.insert_data(engine,'processData',date,code[1],insert_sql)
 # df_vol=pd.DataFrame(vol_list)
 # print(df_vol)
 
