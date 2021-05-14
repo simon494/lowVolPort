@@ -1,15 +1,16 @@
 import baostock as bs
 import pandas as pd
 import dbMan as man
+from property import string
 
 lg=bs.login()
 print('login respond error_code:'+lg.error_code)
 print('login respond error_msg:'+lg.error_msg)
 
 st=bs.query_hs300_stocks()
-s='mysql+pymysql://root:123456@localhost/lowVolPort?charset=utf8'
-engine=man.dbConnect(s)
+engine=man.dbConnect(string)
 conn=engine.connect()
+
 
 data_list = []
 while(st.error_code=='0')&st.next():

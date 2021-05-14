@@ -1,19 +1,11 @@
 import pandas as pd
 import dbMan as dbm
 import toolKit as tk
+from property import string
+from property import date_list
 
-s='mysql+pymysql://root:123456@localhost/lowVolPort?charset=utf8'
-engine=dbm.dbConnect(s)
-
-date_list=['2013-03-29','2013-06-28','2013-09-30', '2013-12-31',
-           '2014-03-31','2014-06-30','2014-09-30','2014-12-31',
-           '2015-03-31','2015-06-30','2015-09-30','2015-12-31',
-           '2016-03-31','2016-06-30','2016-09-30','2016-12-30',
-           '2017-03-31','2017-06-30','2017-09-29','2017-12-29',
-           '2018-03-30','2018-06-29','2018-09-28','2018-12-28',
-           '2019-03-29','2019-06-28','2019-09-30','2019-12-31',
-           '2020-03-31','2020-06-30','2020-09-30','2020-12-31',
-]
+# engine=dbm.dbConnect(s)
+engine=dbm.dbConnect(string)
 
 
 for date in date_list:
@@ -30,6 +22,7 @@ for date in date_list:
     # 对PE进行排序
     pe_sql='select date,code,pe from processData where date = \''+date+'\''
     df_pe=dbm.get_data(engine,pe_sql)
+    df_pe.loc[df_pe[2]=='',2]=1000
     df_pe.iloc[:,2]=df_pe.iloc[:,2].astype(float)
     # print(df_pe)
     df_pe.loc[df_pe[2]<=0,2]=1000
@@ -51,12 +44,7 @@ for date in date_list:
     # print(df_mom_sorted)
 
     # 三表汇总并写入数据库
-    # df_combine=pd.DataFrame(columns=['date','code','rating'])
-    # df_combine['date']=df_vol.iloc[:,0].tolist()
-    # df_combine['code']=df_vol.iloc[:,1].tolist()
-    # print(df_vol_sorted.dtypes)
     temp=pd.merge(pd.merge(df_vol_sorted,df_pe_sorted,on=['date','code']),df_mom_sorted,on=['date','code'])
-    # print(temp)
     df_combine=pd.DataFrame(columns=['date','code','rating'])
     df_combine['date']=temp['date'].tolist()
     df_combine['code']=temp['code'].tolist()
