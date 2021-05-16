@@ -14,4 +14,8 @@ numberOfStock=10
 
 value=1000000
 
-data_source='dataSheet2'
+data_source='dataSheet3'
+
+vol_weight=1
+pe_weight=0.8
+mom_weight=1.5

@@ -21,8 +21,6 @@ portfolio=pd.DataFrame(columns=['code','quantity','remaining'])
 total=0
 
 
-
-
 for date in date_list:
     sql='select * from stockIndex where date = \''+date+'\''
     df_rebalance=pd.DataFrame(columns=['date','code','pos'])
@@ -31,11 +29,11 @@ for date in date_list:
     df_rebalance['code']=temp.iloc[:,1].tolist()
     df_rebalance['pos']=temp.iloc[:,2].tolist()
     # print(df_rebalance)
-    df_rebalance.iloc[:,2]=df_rebalance.iloc[:,2].astype(int)
+    df_rebalance.iloc[:,2]=df_rebalance.iloc[:,2].astype(float)
     df_rebalance_sorted=df_rebalance.sort_values(by='pos')
     # print(df_rebalance_sorted)
     # df_selected=df_rebalance_sorted.head(numberOfStock)
-    df_selected = df_rebalance_sorted.iloc[10:20]
+    df_selected = df_rebalance_sorted.iloc[1:10]
     # print(df_selected)
     for i in range(0,df_selected.shape[0]):
         sql='select date,code from '+data_source+' where date = \''+df_selected.iloc[i,0]+'\' and code = \''+df_selected.iloc[i,1]+'\''
@@ -69,7 +67,7 @@ for date in date_list:
             print(str(i)+'的股价为'+str(close))
             # quant=(value/numberOfStock)//close
             # remaining=(value/numberOfStock)%close
-            quant,remaining=toolKit.buyStock(numberOfStock,value,close)
+            quant,remaining= toolKit.buyStock(numberOfStock, value, close)
             temp1=pd.DataFrame(data=[[i,quant,remaining]],columns=['code','quantity','remaining'])
             rec=rec.append(temp1,ignore_index=False)
             # print(rec)
@@ -84,7 +82,7 @@ for date in date_list:
             temp=dbm.get_data(engine,sql_up)
             new_close=float(temp.loc[0,0])
             dbm.portLog(engine,date,'S',code,new_close)
-            value=value+toolKit.updatingValue(portfolio.iloc[i,1],new_close,portfolio.iloc[i,2])
+            value= value + toolKit.updatingValue(portfolio.iloc[i, 1], new_close, portfolio.iloc[i, 2])
             # value=value+float(portfolio.iloc[i,1])*new_close+float(portfolio.iloc[i,2])
             # print(value)
         print('最新持仓市值为'+str(value))
@@ -101,7 +99,7 @@ for date in date_list:
             dbm.portLog(engine,date,'B',i,close)
             # quant = (value / numberOfStock) // close
             # remaining = (value / numberOfStock) % close
-            quant,remaining=toolKit.buyStock(numberOfStock,value,close)
+            quant,remaining= toolKit.buyStock(numberOfStock, value, close)
             temp1 = pd.DataFrame(data=[[i, quant, remaining]], columns=['code', 'quantity', 'remaining'])
             rec = rec.append(temp1, ignore_index=False)
             # print(rec)
@@ -113,7 +111,7 @@ for i in range(0,numberOfStock):
     sql_up='select close from '+data_source+' where date = \''+str(date_list[-1])+'\' and code = \''+code+'\''
     temp=dbm.get_data(engine,sql_up)
     new_close=float(temp.loc[0,0])
-    value=value+toolKit.updatingValue(portfolio.iloc[i,1],new_close,portfolio.iloc[i,2])
+    value= value + toolKit.updatingValue(portfolio.iloc[i, 1], new_close, portfolio.iloc[i, 2])
 
 print('最终投资组合的总价值为'+str(round(value,2)))
 # print(portfolio_value)

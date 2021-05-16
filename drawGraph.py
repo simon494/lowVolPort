@@ -12,7 +12,7 @@ lg=bs.login()
 data_list = []
 
 for date in date_list:
-    rs = bs.query_history_k_data_plus(code='sh.000300',fields='date,close',start_date=date,end_date=date,frequency='d')
+    rs = bs.query_history_k_data_plus(code='sh.000300',fields='date,close',start_date=date,end_date=date,frequency='d',adjustflag='2')
     # print('query_history_k_data_plus respond error_code:'+rs.error_code)
     # print('query_history_k_data_plus respond  error_msg:'+rs.error_msg)
     while(rs.error_code=='0')&rs.next():

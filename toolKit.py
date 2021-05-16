@@ -47,11 +47,11 @@ def getMomentum(df):
     else:
         return -100
 
-def listPlus(l1,l2):
+def listPlus(l1,l2,w1=1,w2=1):
     result=[]
     if len(l1)==len(l2):
         for i in range(0,len(l1)):
-            result.append(l1[i]+l2[i])
+            result.append(l1[i]*w1+l2[i]*w2)
         return result
     else:
         print('the length of the list does not match!')
@@ -68,3 +68,6 @@ def buyStock(numOfStock,value,close):
 def updatingValue(quant,close,remaining):
     # print('更新最新持仓市值')
     return int(quant)*float(close)+float(remaining)
+
+def applyWeight(a,weight):
+    return a*weight
