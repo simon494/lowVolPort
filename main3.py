@@ -6,6 +6,7 @@ import toolKit2 as tk
 from property import date_list
 from property import string
 from property import data_source
+from property import window
 
 engine=dbm.dbConnect(string)
 lg=bs.login()
@@ -20,7 +21,7 @@ for date in date_list:
     # print(stocks_list)
     for code in stocks_list:
         # print(date,code[1])
-        sql='select distinct * from '+data_source+' where date <= \''+ date +'\' and code = \''+code +'\' order by date desc limit 750'
+        sql='select distinct * from '+data_source+' where date <= \''+ date +'\' and code = \''+code +'\' order by date desc limit '+str(window)
         df=dbm.get_data(engine,sql)
         # print(df)
         per=df.iloc[:,4].astype(float)
