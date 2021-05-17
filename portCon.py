@@ -33,8 +33,8 @@ for date in date_list:
     df_rebalance_sorted=df_rebalance.sort_values(by='pos')
     # print(df_rebalance_sorted)
     # df_selected=df_rebalance_sorted.head(numberOfStock)
-    df_selected = df_rebalance_sorted.iloc[1:10]
-    # print(df_selected)
+    df_selected = df_rebalance_sorted.iloc[0:10]
+    print(df_selected)
     for i in range(0,df_selected.shape[0]):
         sql='select date,code from '+data_source+' where date = \''+df_selected.iloc[i,0]+'\' and code = \''+df_selected.iloc[i,1]+'\''
         temp=dbm.get_data(engine,sql)
@@ -57,7 +57,7 @@ for date in date_list:
         print('获得当下节点股票列表')
         # print(temp)
         composite=temp.iloc[:,1].tolist()
-        # print(composite)
+        print(composite)
         for i in composite:
             sql='select close from '+data_source+' where date = \''+date+'\' and code = \''+i+'\''
             temp=dbm.get_data(engine,sql)
@@ -80,6 +80,7 @@ for date in date_list:
             code=portfolio.iloc[i,0]
             sql_up='select close from '+data_source+' where date = \''+date+'\' and code = \''+code+'\''
             temp=dbm.get_data(engine,sql_up)
+            print(temp)
             new_close=float(temp.loc[0,0])
             dbm.portLog(engine,date,'S',code,new_close)
             value= value + toolKit.updatingValue(portfolio.iloc[i, 1], new_close, portfolio.iloc[i, 2])

@@ -7,6 +7,7 @@ from property import date_list
 from property import string
 from property import data_source
 from property import window
+from property import test_date_list
 
 engine=dbm.dbConnect(string)
 lg=bs.login()
@@ -31,10 +32,15 @@ for date in date_list:
         stocks_list.append(rec[1])
     # print(stocks_list)
     for code in stocks_list:
-        index=int(data_df[(data_df['date']==date)&(data_df['code']==code)].iloc[0,0])
+        # 过滤日期小于季度节点日期数据点，检查是否有超过窗口数的数据条，如果有返回窗口数据量，如果没有返回可查数据
+        temp=data_df[(data_df['date']<=date)&(data_df['code']==code)]
+        index=temp.iloc[-1,0]
         lower=index-window
-        temp=data_df[data_df['code']==code].iloc[lower:index,:]
-        print(temp)
+        if lower>0:
+            temp=data_df[data_df['code']==code].iloc[lower:index,:]
+        else:
+            temp = data_df[data_df['code'] == code].iloc[0:index,:]
+
         per = temp.iloc[:, 4].astype(float)
         vol = np.std(per)
         # print("std: "+str(std))
@@ -45,4 +51,5 @@ for date in date_list:
         process_list.append([date,code,vol,pe,momentum])
     print(len(process_list))
 result=pd.DataFrame(process_list,columns=['date','code','vol','pe','momentum'])
+
 result.to_sql('processData3',conn,if_exists='append')

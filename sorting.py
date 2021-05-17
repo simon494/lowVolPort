@@ -13,7 +13,7 @@ engine=dbm.dbConnect(string)
 
 for date in date_list:
     # 对vol进行排序
-    vol_sql='select date,code,vol from processData2 where date = \''+date+'\''
+    vol_sql='select date,code,vol from processData3 where date = \''+date+'\''
     df_vol=dbm.get_data(engine,vol_sql)
     # print(type(df_vol))
     df_vol.iloc[:,2]=df_vol.iloc[:,2].astype(float)
@@ -24,7 +24,7 @@ for date in date_list:
     # print(df_vol_sorted)
 
     # 对PE进行排序
-    pe_sql='select date,code,pe from processData2 where date = \''+date+'\''
+    pe_sql='select date,code,pe from processData3 where date = \''+date+'\''
     df_pe=dbm.get_data(engine,pe_sql)
     df_pe.loc[df_pe[2]=='',2]=1000
     df_pe.iloc[:,2]=df_pe.iloc[:,2].astype(float)
@@ -38,7 +38,7 @@ for date in date_list:
     # print(df_pe_sorted)
 
     # 对Momentum进行排序
-    mon_sql='select date,code,momentum from processData2 where date = \''+date+'\''
+    mon_sql='select date,code,momentum from processData3 where date = \''+date+'\''
     df_mom=dbm.get_data(engine,mon_sql)
     # print(df_mom)
     df_mom.iloc[:,2]=df_mom.iloc[:,2].astype(float)
