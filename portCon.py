@@ -1,6 +1,6 @@
 import dbMan as dbm
 import pandas as pd
-import toolKit
+import toolKit_old
 from property import date_list
 from property import string
 from property import numberOfStock
@@ -58,17 +58,17 @@ for date in date_list:
         # print(temp)
         composite=temp.iloc[:,1].tolist()
         print(composite)
-        for i in composite:
-            sql='select close from '+data_source+' where date = \''+date+'\' and code = \''+i+'\''
+        for code in composite:
+            sql='select close from '+data_source+' where date = \''+date+'\' and code = \''+code+'\''
             temp=dbm.get_data(engine,sql)
             close=float(temp.loc[0,0])
-            dbm.portLog(engine,date,'B',i,close)
-            print('根据排序，选择购买'+str(i))
+            dbm.portLog(engine,date,'B',code,close)
+            print('根据排序，选择购买'+str(code))
             print(str(i)+'的股价为'+str(close))
             # quant=(value/numberOfStock)//close
             # remaining=(value/numberOfStock)%close
             quant,remaining= toolKit.buyStock(numberOfStock, value, close)
-            temp1=pd.DataFrame(data=[[i,quant,remaining]],columns=['code','quantity','remaining'])
+            temp1=pd.DataFrame(data=[[code,quant,remaining]],columns=['code','quantity','remaining'])
             rec=rec.append(temp1,ignore_index=False)
             # print(rec)
         portfolio=portfolio.append(rec,ignore_index=False)

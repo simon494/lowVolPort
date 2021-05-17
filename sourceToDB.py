@@ -4,6 +4,8 @@ import dbMan as man
 from property import date_list
 from property import string
 from property import data_source
+from property import start_date
+from property import end_date
 
 lg=bs.login()
 print('login respond error_code:'+lg.error_code)
@@ -23,7 +25,7 @@ for date in date_list:
 
 for code in stock_list:
     data_list = []
-    rs = bs.query_history_k_data_plus(code, "date,code,pctChg,peTTM", '2010-01-01', '2021-01-01','d', '2')
+    rs = bs.query_history_k_data_plus(code, "date,code,close,pctChg,peTTM", start_date, end_date,'d', '2')
     print('query_history_k_data_plus respond error_code:' + rs.error_code)
     print('query_history_k_data_plus respond  error_msg:' + rs.error_msg)
     while (rs.error_code == '0') & rs.next():

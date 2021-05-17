@@ -2,7 +2,7 @@ import baostock as bs
 import pandas as pd
 import numpy as np
 import dbMan as dbm
-import toolKit2 as tk
+import toolKit as tk
 from property import date_list
 from property import string
 from property import data_source
@@ -52,4 +52,4 @@ for date in date_list:
     print(len(process_list))
 result=pd.DataFrame(process_list,columns=['date','code','vol','pe','momentum'])
 
-result.to_sql('processData3',conn,if_exists='append')
+result.to_sql('processData',conn,if_exists='append')
