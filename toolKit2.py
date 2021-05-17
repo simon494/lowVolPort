@@ -10,9 +10,9 @@ def peTTM(df):
 
 def getMomentum(df):
     if df.shape[0]!=0:
-        temp = pd.DataFrame(df[:][3], dtype=np.float)
-        start=temp.iloc[-1][3]
-        end=temp.iloc[0][3]
+        temp = pd.DataFrame(df['close'], dtype=np.float)
+        start=temp.iloc[-1][0]
+        end=temp.iloc[0][0]
         momentum=end/start
         return momentum
     else:
