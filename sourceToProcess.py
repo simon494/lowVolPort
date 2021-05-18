@@ -36,20 +36,23 @@ for date in date_list:
         temp=data_df[(data_df['date']<=date)&(data_df['code']==code)]
         index=temp.iloc[-1,0]
         lower=index-window
-        if lower>0:
-            temp=data_df[data_df['code']==code].iloc[lower:index,:]
+        # print(data_df[data_df['index']==index].iloc[0,1])
+        if data_df[data_df['index']==index].iloc[0,1]==date:
+            if lower>0:
+                temp=data_df[data_df['code']==code].iloc[lower:index,:]
+            else:
+                temp = data_df[data_df['code'] == code].iloc[0:index,:]
+            if temp.shape[0] != 0:
+                per = temp.iloc[:, 4].astype(float)
+                vol = np.std(per)
         else:
-            temp = data_df[data_df['code'] == code].iloc[0:index,:]
-
-        if temp.shape[0]!=0:
-            per = temp.iloc[:, 4].astype(float)
-            vol = np.std(per)
+            vol=100.0
         # print("std: "+str(std))
-            pe = tk.peTTM(temp)
+        pe = tk.peTTM(temp)
         # print("pe: "+str(pe))
-            momentum = tk.getMomentum(temp)
+        momentum = tk.getMomentum(temp)
         # print("mom: "+str(mom))
-            process_list.append([date,code,vol,pe,momentum])
+        process_list.append([date,code,vol,pe,momentum])
     print(len(process_list))
 result=pd.DataFrame(process_list,columns=['date','code','vol','pe','momentum'])
 
