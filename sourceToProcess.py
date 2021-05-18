@@ -41,14 +41,15 @@ for date in date_list:
         else:
             temp = data_df[data_df['code'] == code].iloc[0:index,:]
 
-        per = temp.iloc[:, 4].astype(float)
-        vol = np.std(per)
+        if temp.shape[0]!=0:
+            per = temp.iloc[:, 4].astype(float)
+            vol = np.std(per)
         # print("std: "+str(std))
-        pe = tk.peTTM(temp)
+            pe = tk.peTTM(temp)
         # print("pe: "+str(pe))
-        momentum = tk.getMomentum(temp)
+            momentum = tk.getMomentum(temp)
         # print("mom: "+str(mom))
-        process_list.append([date,code,vol,pe,momentum])
+            process_list.append([date,code,vol,pe,momentum])
     print(len(process_list))
 result=pd.DataFrame(process_list,columns=['date','code','vol','pe','momentum'])
 
