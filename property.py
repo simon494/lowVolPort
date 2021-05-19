@@ -31,7 +31,7 @@ vol_weight=1
 pe_weight=0.8
 mom_weight=1.5
 
-start_date='2010-01-01'
-end_date='2021-01-01'
+start_date='20100101'
+end_date='20210101'
 
 window=500
