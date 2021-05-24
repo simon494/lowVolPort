@@ -34,15 +34,15 @@ for date in date_list:
     # print(df_rebalance_sorted)
     # df_selected=df_rebalance_sorted.head(numberOfStock)
     df_selected = df_rebalance_sorted.iloc[0:10]
-    print(df_selected)
+    # print(df_selected)
     for i in range(0,df_selected.shape[0]):
-        sql='select date,code from '+data_source+' where date = \''+df_selected.iloc[i,0]+'\' and code = \''+df_selected.iloc[i,1]+'\''
+        sql='select trade_date,ts_code from '+data_source+' where trade_date <= \''+toolKit.dateBaoTo2Share(df_selected.iloc[i,0])+'\' and ts_code = \''+df_selected.iloc[i,1]+'\' limit 1'
         temp=dbm.get_data(engine,sql)
         # print(temp)
         temp.columns=['date','code']
         # print(temp)
         df_port=df_port.append(temp,ignore_index=False)
-        # print(df_port)
+    print(df_port)
 
 # 更新组合
 
@@ -53,13 +53,13 @@ for date in date_list:
         portfolio_value.append(value)
         dbm.portTrace(engine,date,value)
         print('组合初始化！')
-        temp=df_port.loc[df_port['date']==date]
+        temp=df_port.loc[df_port['date']==toolKit.dateBaoTo2Share(date)]
         print('获得当下节点股票列表')
         # print(temp)
         composite=temp.iloc[:,1].tolist()
         print(composite)
         for code in composite:
-            sql='select close from '+data_source+' where date = \''+date+'\' and code = \''+code+'\''
+            sql='select close from '+data_source+' where trade_date <= \''+toolKit.dateBaoTo2Share(date)+'\' and ts_code = \''+code+'\' limit 1'
             temp=dbm.get_data(engine,sql)
             close=float(temp.loc[0,0])
             dbm.portLog(engine,date,'B',code,close)
@@ -78,9 +78,9 @@ for date in date_list:
         print('更新持仓市值')
         for i in range(0,numberOfStock):
             code=portfolio.iloc[i,0]
-            sql_up='select close from '+data_source+' where date = \''+date+'\' and code = \''+code+'\''
+            sql_up='select close from '+data_source+' where trade_date <= \''+toolKit.dateBaoTo2Share(date)+'\' and ts_code = \''+code+'\' limit 1'
             temp=dbm.get_data(engine,sql_up)
-            print(temp)
+            # print(temp)
             new_close=float(temp.loc[0,0])
             dbm.portLog(engine,date,'S',code,new_close)
             value= value + toolKit.updatingValue(portfolio.iloc[i, 1], new_close, portfolio.iloc[i, 2])
@@ -94,7 +94,7 @@ for date in date_list:
         # print(temp)
         composite=temp.iloc[:,1].tolist()
         for i in composite:
-            sql = 'select close from '+data_source+' where date = \'' + date + '\' and code = \'' + i + '\''
+            sql = 'select close from '+data_source+' where trade_date <= \'' + toolKit.dateBaoTo2Share(date) + '\' and ts_code = \'' + i + '\' limit 1'
             temp = dbm.get_data(engine, sql)
             close = float(temp.loc[0, 0])
             dbm.portLog(engine,date,'B',i,close)
@@ -109,7 +109,7 @@ for date in date_list:
 
 for i in range(0,numberOfStock):
     code=portfolio.iloc[i,0]
-    sql_up='select close from '+data_source+' where date = \''+str(date_list[-1])+'\' and code = \''+code+'\''
+    sql_up='select close from '+data_source+' where trade_date <= \''+toolKit.dateBaoTo2Share(str(date_list[-1]))+'\' and ts_code = \''+code+'\' limit 1'
     temp=dbm.get_data(engine,sql_up)
     new_close=float(temp.loc[0,0])
     value= value + toolKit.updatingValue(portfolio.iloc[i, 1], new_close, portfolio.iloc[i, 2])

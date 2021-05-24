@@ -33,15 +33,23 @@ def stdDev(perMove):
 
 def peTTM(df):
     if df.shape[0]!=0:
-        return df.iloc[0][4]
+        if pd.isnull(df.iloc[0][5]):
+            return -1000.0
+        else:
+            return df.iloc[0][5]
     else:
         return -1000.0
 
 def getMomentum(df):
+    # print(df.shape)
     if df.shape[0]!=0:
-        temp = pd.DataFrame(df[:][3], dtype=np.float)
-        start=temp.iloc[-1][3]
-        end=temp.iloc[0][3]
+        temp = pd.DataFrame(df.iloc[:,3], dtype=np.float)
+        # print(temp)
+        start=temp.iloc[-1][0]
+        print('start '+str(start))
+        end=temp.iloc[0][0]
+        print('end ' + str(end))
+        # print(start,end)
         momentum=end/start
         return momentum
     else:
@@ -71,3 +79,34 @@ def updatingValue(quant,close,remaining):
 
 def applyWeight(a,weight):
     return a*weight
+
+def stockBaoTo2Share(stock):
+    prefix=stock[0:2]
+    # print(prefix)
+    code=stock[3:9]
+    # print(code)
+    result=code+'.'+prefix
+    return(result.upper())
+
+def stock2ShareToBao(stock):
+    code=stock[0:5]
+    prefix=stock[7:8]
+    result=prefix+'.'+code
+    return(result.upper())
+
+def dateBaoTo2Share(date):
+    y=date[0:4]
+    # print(y)
+    m=date[5:7]
+    # print(m)
+    d=date[8:10]
+    # print(d)
+    result=y+m+d
+    return(result)
+
+def date2SharetoBao(date):
+    y =date[0:3]
+    m=date[4:5]
+    d=date[6:7]
+    result=y +'-'+ m +'-'+ d
+    return(result)
